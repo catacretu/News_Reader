@@ -1,28 +1,81 @@
 package com.catalincretu.newsreader.feature.newslist.model;
 
+import android.annotation.SuppressLint;
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.AndroidViewModel;
 
-public class NewsListViewModel extends ViewModel implements LifecycleObserver {
+import com.catalincretu.data.NewsRepository;
+import com.catalincretu.data.feature.model.Article;
+import com.catalincretu.newsreader.feature.newslist.reactive.SingleLiveEvent;
+
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
+
+public class NewsListViewModel extends AndroidViewModel {
+
 
     @NonNull
     public final ObservableList<ArticleItemViewModel> articlesList;
+    private final static String LINK = "https://newsapi.org/";
+    public final ObservableBoolean visibility_views;
+    public final ObservableBoolean isLoading;
+    public final ObservableField<String> resultText;
+    public final SingleLiveEvent<Throwable> error;
+    public final SingleLiveEvent<String> openLink;
+    private final NewsRepository repo;
 
-    public NewsListViewModel() {
+
+    public NewsListViewModel(Application application, NewsRepository repo) {
+        super(application);
+        this.repo = repo;
         this.articlesList = new ObservableArrayList<>();
+        this.isLoading = new ObservableBoolean();
+        this.visibility_views = new ObservableBoolean(true);
+        this.resultText = new ObservableField<>();
+        this.error = new SingleLiveEvent<>();
+        this.openLink = new SingleLiveEvent<>();
+
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    public void refresh() {
-        articlesList.add(new ArticleItemViewModel("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/220px-Android_robot.svg.png", "GSP", "News1"));
-        articlesList.add(new ArticleItemViewModel("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/220px-Android_robot.svg.png", "Digi", "News2"));
-        articlesList.add(new ArticleItemViewModel("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/220px-Android_robot.svg.png", "Sport.ro", "News3"));
-        // articlesList.add(new ArticleItemViewModel("Title1","Content1"));
-        //articlesList.add(new ArticleItemViewModel("Title2","Content2"));
+    @SuppressLint("CheckResult")
+    public void refreshData() {
+        isLoading.set(true);
+        visibility_views.set(false);
+        repo.getNewsArticles()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::onNewsArticlesReceived,
+                        this::onNewsArticlesError
+                );
     }
+
+    private void onNewsArticlesReceived(@NonNull List<Article> articles) {
+        isLoading.set(false);
+        //resultText.set(getApplication().getString(R.string.results, articles.size()));
+
+        for (Article item : articles) {
+            ArticleItemViewModel articleItemViewModel = new ArticleItemViewModel(item.imageUrl, item.title, item.content);
+            this.articlesList.add(articleItemViewModel);
+        }
+
+    }
+
+    private void onNewsArticlesError(Throwable throwable) {
+        isLoading.set(false);
+        error.setValue(throwable);
+    }
+
+    public void onPoweredBySelected() {
+        openLink.setValue(LINK);
+    }
+
+
 }
