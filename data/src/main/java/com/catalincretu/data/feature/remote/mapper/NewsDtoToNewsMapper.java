@@ -10,13 +10,15 @@ import java.util.List;
 import io.reactivex.functions.Function;
 
 public class NewsDtoToNewsMapper implements Function<ArticleListDto, List<Article>> {
+
     @Override
     public List<Article> apply(ArticleListDto articleDtos) {
         List<Article> articles = new ArrayList<>();
 
         for (ArticleDto dto : articleDtos.articles) {
             Article article = new Article(
-                    dto.urlToImage != null ? dto.urlToImage : "", //Adding default values for business model
+                    dto.urlToImage != null ? dto.urlToImage : "",
+                    dto.url != null ? dto.url : "",
                     dto.title != null ? dto.title : "",
                     dto.content != null ? dto.content : "",
                     dto.description != null ? dto.description : ""
@@ -29,3 +31,4 @@ public class NewsDtoToNewsMapper implements Function<ArticleListDto, List<Articl
     }
 
 }
+

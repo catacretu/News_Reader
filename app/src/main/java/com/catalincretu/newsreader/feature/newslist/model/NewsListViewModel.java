@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.catalincretu.data.NewsRepository;
 import com.catalincretu.data.feature.model.Article;
+import com.catalincretu.newsreader.feature.newslist.listener.Handler;
 import com.catalincretu.newsreader.feature.newslist.reactive.SingleLiveEvent;
 
 import java.util.List;
@@ -19,18 +20,18 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 
-public class NewsListViewModel extends AndroidViewModel {
+public class NewsListViewModel extends AndroidViewModel implements Handler {
 
 
     @NonNull
     public final ObservableList<ArticleItemViewModel> articlesList;
     private final static String LINK = "https://newsapi.org/";
+    private final NewsRepository repo;
     public final ObservableBoolean visibility_views;
     public final ObservableBoolean isLoading;
     public final ObservableField<String> resultText;
     public final SingleLiveEvent<Throwable> error;
     public final SingleLiveEvent<String> openLink;
-    private final NewsRepository repo;
 
 
     public NewsListViewModel(Application application, NewsRepository repo) {
@@ -59,10 +60,9 @@ public class NewsListViewModel extends AndroidViewModel {
 
     private void onNewsArticlesReceived(@NonNull List<Article> articles) {
         isLoading.set(false);
-        //resultText.set(getApplication().getString(R.string.results, articles.size()));
 
         for (Article item : articles) {
-            ArticleItemViewModel articleItemViewModel = new ArticleItemViewModel(item.imageUrl, item.title, item.content);
+            ArticleItemViewModel articleItemViewModel = new ArticleItemViewModel(item.imageUrl, item.url, item.title, item.content);
             this.articlesList.add(articleItemViewModel);
         }
 
@@ -78,4 +78,11 @@ public class NewsListViewModel extends AndroidViewModel {
     }
 
 
+    @Override
+    public void onItemSelected(ArticleItemViewModel item) {
+        if (!item.url.equals(""))
+            openLink.setValue(item.url);
+
+
+    }
 }
