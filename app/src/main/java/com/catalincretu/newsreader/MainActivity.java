@@ -1,10 +1,10 @@
 package com.catalincretu.newsreader;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-import com.catalincretu.newsreader.ui.main.MainFragment;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.catalincretu.newsreader.feature.newslist.fragment.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
