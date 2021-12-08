@@ -11,11 +11,9 @@ import androidx.databinding.ObservableList;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.catalincretu.data.NewsRepository;
-import com.catalincretu.data.feature.model.Article;
 import com.catalincretu.newsreader.feature.newslist.listener.Handler;
+import com.catalincretu.newsreader.feature.newslist.mapper.ArticleToArticleItemViewModelMapper;
 import com.catalincretu.newsreader.feature.newslist.reactive.SingleLiveEvent;
-
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -24,7 +22,7 @@ public class NewsListViewModel extends AndroidViewModel implements Handler {
 
 
     @NonNull
-    public final ObservableList<ArticleItemViewModel> articlesList;
+    public ObservableList<ArticleItemViewModel> articlesList;
     private final static String LINK = "https://newsapi.org/";
     private final NewsRepository repo;
     public final ObservableBoolean visibility_views;
@@ -52,19 +50,16 @@ public class NewsListViewModel extends AndroidViewModel implements Handler {
         visibility_views.set(false);
         repo.getNewsArticles()
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new ArticleToArticleItemViewModelMapper())
                 .subscribe(
                         this::onNewsArticlesReceived,
                         this::onNewsArticlesError
                 );
     }
 
-    private void onNewsArticlesReceived(@NonNull List<Article> articles) {
+    private void onNewsArticlesReceived(@NonNull ObservableList<ArticleItemViewModel> articleItemViewModels) {
         isLoading.set(false);
-
-        for (Article item : articles) {
-            ArticleItemViewModel articleItemViewModel = new ArticleItemViewModel(item.imageUrl, item.url, item.title, item.content);
-            this.articlesList.add(articleItemViewModel);
-        }
+        this.articlesList.addAll(articleItemViewModels);
     }
 
     private void onNewsArticlesError(Throwable throwable) {
