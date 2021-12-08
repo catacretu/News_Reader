@@ -65,7 +65,6 @@ public class NewsListViewModel extends AndroidViewModel implements Handler {
             ArticleItemViewModel articleItemViewModel = new ArticleItemViewModel(item.imageUrl, item.url, item.title, item.content);
             this.articlesList.add(articleItemViewModel);
         }
-
     }
 
     private void onNewsArticlesError(Throwable throwable) {

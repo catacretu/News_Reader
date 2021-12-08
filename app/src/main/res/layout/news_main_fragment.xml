@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.catalincretu.newsreader.feature.newslist.model.NewsListViewModel" />
@@ -14,17 +16,15 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".feature.newslist.fragment.MainFragment">
-
-
+        tools:context=".feature.newslist.fragment.NewsFragment">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/appCompatButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.refreshData()}"
             android:text="@string/refresh"
             android:visibility="@{viewModel.visibility_views ? View.VISIBLE : View.GONE}"
-            android:onClick="@{() -> viewModel.refreshData()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,11 +44,11 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:items="@{viewModel.articlesList}"
             app:Handler="@{viewModel}"
+            app:items="@{viewModel.articlesList}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/article_item" />
 
         <TextView
@@ -56,11 +56,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:onClick="@{() -> viewModel.onPoweredBySelected()}"
             android:text="@string/api_attribution"
             android:visibility="@{viewModel.visibility_views ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:onClick="@{() -> viewModel.onPoweredBySelected()}"
             app:layout_constraintStart_toStartOf="parent" />
 
 

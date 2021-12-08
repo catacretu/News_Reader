@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.catalincretu.data.di.RepoModule;
 
-public class DemoApplication extends Application {
+public class NewsApplication extends Application {
     private static RepoModule repoModule;
 
     public static RepoModule getRepoProvider() {

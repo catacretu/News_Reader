@@ -29,6 +29,5 @@ public class NewsDtoToNewsMapper implements Function<ArticleListDto, List<Articl
 
         return articles;
     }
-
 }
 

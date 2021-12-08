@@ -41,7 +41,7 @@ public class NewsLocalSource {
                 .subscribe();
     }
 
-   /* public Single<ArticleEntity> getArticleItem(int id) {
+    public Single<ArticleEntity> getArticleItem(int id) {
         return dao.queryArticleItem(id);
     }
 
@@ -56,10 +56,11 @@ public class NewsLocalSource {
             return dao.updateArticle(article.urlToImage, article.url, article.content, article.description,
                     article.title, article.author, article.id);
         }
+    }
+
     public Completable saveArticle(ArticleEntity article) {
         return dao.insertArticle(article);
-    } */
-
+    }
 }
 
 

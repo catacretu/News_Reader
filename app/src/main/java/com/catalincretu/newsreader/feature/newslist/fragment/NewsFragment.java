@@ -17,13 +17,13 @@ import com.catalincretu.newsreader.feature.newslist.model.NewsListViewModel;
 import com.catalincretu.newsreader.feature.newslist.model.factory.ViewModelFactory;
 import com.catalincretu.newsreader.feature.newslist.navigator.AlertNavigator;
 
-public class MainFragment extends Fragment {
+public class NewsFragment extends Fragment {
 
     private NewsListViewModel viewModel;
     private AlertNavigator alertNavigator;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static NewsFragment newInstance() {
+        return new NewsFragment();
     }
 
     @Override
